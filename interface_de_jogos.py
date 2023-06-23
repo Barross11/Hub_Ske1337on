@@ -1,8 +1,6 @@
 from random import choice,randint
-from os import system
-from time import sleep
-from sys import exit
-import tkinter as tk  
+import tkinter as tk 
+from tkinter import messagebox 
 
 # ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 # | Configuração do Botão que aciona a funcionalidade Calculadora		        |
@@ -206,215 +204,290 @@ def botao_pedra_papel_e_tesoura():
 
 	# Sistema de pontuação e iniciação de variável
 	opcoes = ["Pedra", "Papel", "Tesoura"]
-	escolha_maquina = choice(opcoes)
-	ponto_jogador = 0
-	ponto_maquina = 0
-	escolha_maquina = None
-	escolha_jogador = None    	
+	global ponto_jogador
+	global ponto_maquina
+	global escolha_maquina
+	global escolha_jogador
+	global ganhador_rodada	
+	ponto_jogador=0
+	ponto_maquina=0
+	escolha_maquina = ""
+	escolha_jogador = "" 
+	ganhador_rodada = ""
+
+	def fim_De_jogo():
+		global ponto_maquina
+		global ponto_jogador
+		global ganhador_rodada
+		if ponto_jogador == 10 or ponto_maquina == 10:
+			messagebox.showinfo("PARÁBENS", f"{ganhador_rodada} é o grande CAMPEÃO")
+			ponto_jogador=0
+			ponto_maquina=0
+			ganhador_rodada = ""
+			limpar_escolhas()
+
+
+
+	def atualizar_escolhas():
+		global print_escolha_maquina
+		global print_escolha_jogador
+		global escolha_jogador
+		global escolha_maquina
+		print_escolha_jogador.config(text=f"A escolha do Jogador é {escolha_jogador}")
+		print_escolha_maquina.config(text=f"A escolha da Máquina é {escolha_maquina}") 
+		condições_de_vitoria()
+
+	def maquina_escolhendo():
+		global escolha_maquina
+		escolha_maquina = choice(opcoes)
+		atualizar_escolhas()		
+
+	def limpar_escolhas():
+		global escolha_jogador
+		global escolha_maquina		
+		escolha_jogador = "" 
+		escolha_maquina = ""
+
+	def placar():
+		global ganhador_rodada
+		global ponto_jogador
+		global ponto_maquina
+		global placar_1
+		global mensagem_de_Campeão		
+		if ganhador_rodada == "Jogador":
+			ponto_jogador+=1
+			mensagem_de_Campeão.config(text=f"O grande vencedor é {ganhador_rodada} ", font = ("Arial", 11, "bold"))
+			fim_De_jogo()
+		elif ganhador_rodada == "Máquina":
+			ponto_maquina+=1
+			mensagem_de_Campeão.config(text=f"O grande vencedor é {ganhador_rodada} ", font = ("Arial", 11, "bold"))
+			fim_De_jogo()
+		elif ganhador_rodada == "Ninguém, foi EMPATE":
+			mensagem_de_Campeão.config(text=f"O grande vencedor é {ganhador_rodada} ", font = ("Arial", 11, "bold"))
+		placar_1.config(text=f"O placar atual é {ponto_jogador} PONTOS JOGADOR e {ponto_maquina} PONTOS MÁQUINA")
+		limpar_escolhas()
+
+	def condições_de_vitoria():
+		global ponto_jogador
+		global ponto_maquina
+		global escolha_jogador
+		global escolha_maquina
+		global ganhador_rodada				
+		if (escolha_jogador == "Pedra" and escolha_maquina == "Tesoura") or (escolha_jogador == "Papel" and escolha_maquina == "Pedra") or (escolha_jogador == "Tesoura" and escolha_maquina == "Papel"):
+			ganhador_rodada = "Jogador"
+			placar()
+		elif (escolha_jogador == "Tesoura" and escolha_maquina == "Pedra") or (escolha_jogador == "Pedra" and escolha_maquina == "Papel") or (escolha_jogador == "Papel" and escolha_maquina == "Tesoura"):
+			ganhador_rodada = "Máquina"
+			placar()
+		elif escolha_jogador == escolha_maquina:
+			ganhador_rodada = "Ninguém, foi EMPATE"
+			placar()			
 
 	def Pedra():
 		global escolha_jogador
 		escolha_jogador = "Pedra"
-		global ganhador_rodada, ponto_jogador, ponto_maquina
-		if escolha_maquina == "Papel":
-			ganhador_rodada = "O campeão da rodada é a Máquina"
-			ponto_maquina+=1
-		elif escolha_maquina == "Tesoura":
-			ganhador_rodada = "O campeão da rodada é o Jogador"
-			ponto_jogador+=1
-		elif escolha_maquina == "Pedra":
-			ganhador_rodada = "A rodada é empate ja que ambos escolheram a mesma coisa"
+		maquina_escolhendo()		
 
 	def Papel():
-		global escolha_jogador
+		global escolha_jogador		
 		escolha_jogador = "Papel"
-		global ganhador_rodada, ponto_jogador, ponto_maquina
-		if escolha_maquina == "Tesoura":
-			ganhador_rodada = "O campeão da rodada é a Máquina"
-			ponto_maquina+=1
-		elif escolha_maquina == "Pedra":
-			ganhador_rodada = "O campeão da rodada é o Jogador"
-			ponto_jogador+=1
-		elif escolha_maquina == "Papel":
-			ganhador_rodada = "A rodada é empate ja que ambos escolheram a mesma coisa"			
-
+		maquina_escolhendo()
+				
 	def Tesoura():
 		global escolha_jogador
 		escolha_jogador = "Tesoura"
-		global ganhador_rodada, ponto_jogador, ponto_maquina
-		if escolha_maquina == "Pedra":
-			ganhador_rodada = "O campeão da rodada é a Máquina"
-			ponto_maquina+=1
-		elif escolha_maquina == "Papel":
-			ganhador_rodada = "O campeão da rodada é o Jogador"
-			ponto_jogador+=1
-		elif escolha_maquina == "Tesoura":
-			ganhador_rodada = "A rodada é empate ja que ambos escolheram a mesma coisa"				
+		maquina_escolhendo()
 
-	def janela_pedra_papel_e_tesoura():
+	def func_pedra_papel_e_tesoura():
+		global placar_1
+		global mensagem_de_Campeão
+		global print_escolha_jogador
+		global print_escolha_maquina
+		global janela_pedra_papel_e_tesoura
+		global ponto_jogador
+		global ponto_maquina
+		global escolha_maquina
+		global escolha_jogador
+		global ganhador_rodada	
 		janela_pedra_papel_e_tesoura = tk.Toplevel(menu)
 		janela_pedra_papel_e_tesoura.title("Pedra Papel e Tesoura")
-		janela_pedra_papel_e_tesoura.geometry("700x600")
+		janela_pedra_papel_e_tesoura.geometry("560x160")
 		informacao_janela_pedra_papel_e_tesoura= tk.Label(janela_pedra_papel_e_tesoura, text="Faça 10 pontos e ganhe da Máquina", font = ("Arial", 14, "bold"))
-		informacao_janela_pedra_papel_e_tesoura.pack()
+		informacao_janela_pedra_papel_e_tesoura.grid(row=0, column=1)
 		# Configuração da Janela
-		ponto_jogador_janela = tk.Label(janela_pedra_papel_e_tesoura, text=ponto_jogador)
-		ponto_jogador_janela.pack()
 		botao_Pedra = tk.Button(janela_pedra_papel_e_tesoura, text="Pedra", command=Pedra)
 		botao_Papel = tk.Button(janela_pedra_papel_e_tesoura, text="Papel", command=Papel)
 		botao_Tesoura = tk.Button(janela_pedra_papel_e_tesoura, text="Tesoura", command=Tesoura)
-		print_escolha_jogador = tk.Label(janela_pedra_papel_e_tesoura, text=f"A escolha do jogador é {escolha_jogador}")
-		print_escolha_jogador.pack()
-		botao_Pedra.pack()
-		botao_Papel.pack()
-		botao_Tesoura.pack()
+		print_escolha_jogador = tk.Label(janela_pedra_papel_e_tesoura, text=f"A escolha do Jogador é {escolha_jogador}")
+		print_escolha_maquina = tk.Label(janela_pedra_papel_e_tesoura, text=f"A escolha da Máquina é {escolha_maquina}")
+		print_escolha_jogador.grid(row=2, column=1)
+		print_escolha_maquina.grid(row=3, column=1)		
+		placar_1 = tk.Label(janela_pedra_papel_e_tesoura, text=f"O placar atual é {ponto_jogador} PONTOS JOGADOR e {ponto_maquina} PONTOS MÁQUINA")
+		placar_1.grid(row=1, column=1)		
+		mensagem_de_Campeão= tk.Label(janela_pedra_papel_e_tesoura, text=f"O grande vencedor é {ganhador_rodada} ", font = ("Arial", 11, "bold"))
+		mensagem_de_Campeão.grid(row=4, column=1)
+		botao_Pedra.grid(row=6, column=0, padx=10)
+		botao_Papel.grid(row=6, column=1, padx=10)
+		botao_Tesoura.grid(row=6, column=2,  padx=10)									
 
-	janela_pedra_papel_e_tesoura()
+		janela_pedra_papel_e_tesoura.mainloop()		
 
-	system("clear")
-	def quer_continuar():
-		resposta = input("[!] Pressione ENTER para permanecer jogando ou digite SAIR para parar de jogar> ").lower()
-		if resposta == "sair":
-			print("[!] Foi um prazer jogar com você!")
-			exit()
-		else:
-			system("clear")
-
-	def checar_vitoria(pontos_jogador, pontos_maquina):
-		vencedor = None
-		if pontos_jogador == 10:
-			vencedor = "JOGADOR"
-		if pontos_maquina == 10:
-			vencedor = "COMPUTADOR"
-		if vencedor is not None:
-			system("clear")
-			print(f"[~] A pontuação final foi {pontos_jogador} PONTOS jogador e {pontos_maquina} PONTOS maquina")
-			print(f"[+] O {vencedor} é o GRANDE VENCEDOR!!!!!!")
-			exit()
-		else:
-			quer_continuar()
-
-	def jogar_pedra_papel_tesoura():
-		print("** Vamos jogar Pedra, Papel ou Tesoura :D **")
-		print("--!-- Ganha quem alcançar 10 pontos primeiro ou pedir pra sair. QUE VENÇA O MELHOR --!--")
-		opcoes = ["pedra", "papel", "tesoura"]
-		parar = ""
-		ponto_maquina = 0
-		ponto_jogador = 0
-		while parar != "sair":
-			escolha = ""
-			print(f"A pontuação atual é {ponto_jogador} PONTOS jogador e {ponto_maquina} PONTOS maquina")
-			while escolha not in opcoes:
-				escolha = input("[+] Você vai escolher Pedra, Papel ou Tesoura? ").lower()
-				if escolha not in opcoes:
-					print("[!] Você precisa colocar uma opção válida")
-			print("[!] Vou fazer uma escolha *BIP* *BOP*....")
-			sleep(1)
-			escolha_maquina = choice(opcoes)
-
-			# ----  ---- Condições de EMPATE ----  ----
-			if escolha_maquina == escolha:
-				print("[!] Escolhemos a mesma coisa")
-				print("[~] Essa rodada foi empate")
-				ponto_maquina += 1
-				ponto_jogador += 1
-				checar_vitoria(ponto_jogador, ponto_maquina)
-
-			#  ----  ---- Condições de Vitória de Jogador ----  ----
-			elif escolha == "tesoura" and escolha_maquina == "papel":
-				print(f"[!] Eu escolhi {escolha_maquina} e você {escolha}")
-				print("[~] Você ganhou essa rodada")
-				ponto_jogador += 1
-				checar_vitoria(ponto_jogador, ponto_maquina)
-			elif escolha == "papel" and escolha_maquina == "pedra":
-				print(f"[!] Eu escolhi {escolha_maquina} e você {escolha}")
-				print("[~] Você ganhou essa rodada")
-				ponto_jogador += 1
-				checar_vitoria(ponto_jogador, ponto_maquina)
-			elif escolha == "pedra" and escolha_maquina == "tesoura":
-				print(f"[!] Eu escolhi {escolha_maquina} e você {escolha}")
-				print("[~] Você ganhou essa rodada")
-				ponto_jogador += 1
-				checar_vitoria(ponto_jogador, ponto_maquina)
-
-			#  ----  ---- Condições de Derrota do Jogador ----  ----
-			elif escolha_maquina == "tesoura" and escolha == "papel":
-				print(f"[!] Eu escolhi {escolha_maquina} e você {escolha}")
-				print("[~] Você perdeu essa rodada")
-				ponto_maquina += 1
-				checar_vitoria(ponto_jogador, ponto_maquina)
-			elif escolha_maquina == "papel" and escolha == "pedra":
-				print(f"[!] Eu escolhi {escolha_maquina} e você {escolha}")
-				print("[~] Você perdeu essa rodada!")
-				ponto_maquina += 1
-				checar_vitoria(ponto_jogador, ponto_maquina)
-			elif escolha_maquina == "pedra" and escolha == "tesoura":
-				print(f"[!] Eu escolhi {escolha_maquina} e você {escolha}")
-				print("[~] Você perdeu essa rodada")
-				ponto_maquina += 1
-				checar_vitoria(ponto_jogador, ponto_maquina)
-			else:
-				print("[!] Algo deu errado!")
-				break
-
-	if __name__ == "__main__":
-		jogar_pedra_papel_tesoura()
+	func_pedra_papel_e_tesoura()
 
 # ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 # | Configuração do Botão que aciona a funcionalidade Adivinha Número           |
 # ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----	    
 
 def botao_adivinha_numero():
-		system("clear")
-		nome = input("[+] Me diga o seu nome> ")
-		print("Me diga um começo e fim inteiro e eu irei escolher um número pra você tentar adivinhar")
-		while True:
-			inicio = int(input("Me diga o número de inicio> "))
-			fim = int(input("Me diga o número de fim> "))
-			if fim < inicio:
-				print("[!] O número escolhido para ser fim não pode ser menor que o de inicio")
-			elif fim == inicio or inicio == fim:
-				print("[!] Os números escolhidos para fim e inicio não podem ser iguais")
-			elif (fim-inicio)==1:
-				print("[!] É preciso que exista pelo menos 1 numero inteiro entre o inicio e fim")
+
+	global numero_computador
+	global count
+	global historico_tentativas
+	numero_computador = 0
+	count = 0
+	historico_tentativas = []
+
+	def func_janela_regras():
+		janela_regras = tk.Toplevel()
+		janela_regras.title("Regras")
+		janela_regras.geometry("1000x220")
+		informacao_janela_regras = tk.Label(janela_regras, text="Essas são as regras do Adivinhador\n", font = ("Arial", 15, "bold"))
+		informacao_janela_regras.pack()
+		regra_1 = tk.Label(janela_regras, text="1° O valor de fim não pode ser menor que o valor de inicio\n", font = ("Arial", 10, "bold"))
+		regra_1.pack()
+		regra_2 = tk.Label(janela_regras, text="2° O valor de fim e inicio não podem ser iguais\n", font = ("Arial", 10, "bold"))
+		regra_2.pack()
+		regra_3 = tk.Label(janela_regras, text="3° É preciso que exista pelo menos 1 numero inteiro entre o inicio e fim\n", font = ("Arial", 10, "bold"))
+		regra_3.pack()
+		regra_4 = tk.Label(janela_regras, text="4° O valor fim não poderá exceder 34, para as posibilidades caberem na janela\n", font = ("Arial", 10, "bold"))
+		regra_4.pack()
+		regra_5 = tk.Label(janela_regras, text="5° O valor de inicio não pode ser menor que 1\n", font = ("Arial", 10, "bold"))
+		regra_5.pack()
+
+
+	def jogar():	
+		global resultado
+		global numero_inicio_int
+		global numero_fim_int	
+		global numero_computador
+		global count
+		global historico_tentativas
+		global inserir_tentativa	
+		global dica	
+		try:
+			tentativa_jogador_int = int(inserir_tentativa.get())	
+			if tentativa_jogador_int > numero_computador and tentativa_jogador_int < numero_fim_int:
+				count+=1
+				historico_tentativas.append(inserir_tentativa.get())
+				dica.config(text="O número que pensei é menor",  font = ("Arial", 10, "bold"))
+			elif tentativa_jogador_int < numero_computador and tentativa_jogador_int > numero_inicio_int:
+				count+=1
+				historico_tentativas.append(inserir_tentativa.get())
+				dica.config(text="O número que pensei é maior",  font = ("Arial", 10, "bold"))
+			elif tentativa_jogador_int > numero_fim_int:
+				count+=1
+				historico_tentativas.append(inserir_tentativa.get())
+				dica.config(text="Você precisa colocar um numero menor que o seu fim",  font = ("Arial", 10, "bold"))			
+			elif tentativa_jogador_int < numero_inicio_int:
+				count+=1
+				historico_tentativas.append(inserir_tentativa.get())
+				dica.config(text="Você precisa colocar um numero maior que o seu inicio",  font = ("Arial", 10, "bold"))
+			elif tentativa_jogador_int == numero_computador:
+				count+=1						
+				historico_tentativas.append(inserir_tentativa.get())
+				messagebox.showinfo("PARÁBENS", f"Você Acertou!\n Tentativas= {historico_tentativas}\n Total de Tentativas= {count}")
+			elif tentativa_jogador_int == numero_inicio_int or tentativa_jogador_int == numero_fim_int:
+				count+=1
+				historico_tentativas.append(inserir_tentativa.get())
+				dica.config(text="Coloque um valor inteiro dentro do limite estabelecido por você",  font = ("Arial", 10, "bold"))
 			else:
-				break
-		numero_computador = randint(inicio,fim)
-		count = 0
-		tentativas = []
-		while True:
-			if numero_computador == fim or numero_computador == inicio:
-				numero_computador = randint(inicio,fim)
+				count+=1
+				dica.config(text="Houve um erro",  font = ("Arial", 10, "bold"))
+
+		except ValueError:
+			dica.config(text= "O valor precisa ser um número inteiro e válido")						
+
+	def possibilidades():
+		global resultado
+		global numero_inicio_int
+		global numero_fim_int	
+		global numero_computador
+		global inserir_tentativa
+		resultado.config(text=f"A maquina possui um número")
+		posibilidades = list(range(numero_inicio_int + 1, numero_fim_int))
+		possibilidades_jogador = tk.Label(janela_adivinha_numero, text=f"Posibilidades: {posibilidades}")
+		possibilidades_jogador.pack()
+		inserir_tentativa = tk.Entry(janela_adivinha_numero)
+		inserir_tentativa.pack()
+		botao_verificar = tk.Button(janela_adivinha_numero, text="Verificar", command=jogar)
+		botao_verificar.pack()
+
+	def gerar():
+		global resultado
+		global numero_inicio
+		global numero_fim
+		global numero_computador
+		global botao_regras	
+		global botao_regras_packado
+		global possibilidades_jogador
+		global numero_inicio_int
+		global numero_fim_int
+		try:
+			numero_inicio_int = int(numero_inicio.get())
+			numero_fim_int = int(numero_fim.get())
+			numero_computador = randint(numero_inicio_int, numero_fim_int)
+			if numero_inicio_int > numero_fim_int:
+				resultado.config(text="Adicione uma entrada válida!\n Visite as regras")
+			elif numero_fim_int == numero_inicio_int or numero_inicio_int == numero_fim_int:
+				resultado.config(text="Adicione uma entrada válida!\n Visite as regras")
+			elif (numero_fim_int-numero_inicio_int)==1:
+				resultado.config(text="Adicione uma entrada válida!\n Visite as regras")
+			elif numero_fim_int > 34:
+				resultado.config(text="Adicione uma entrada válida!\n Visite as regras")
+			elif numero_inicio_int <= 0:
+				resultado.config(text="Adicione uma entrada válida!\n Visite as regras")
 			else:
-				break
-		while True:
-			numero_jogador=int(input("[+] Me diga o seu numero> "))
-			if numero_jogador > numero_computador and numero_jogador < fim:
-				count+=1
-				print("[!] O número que pensei é menor")
-				tentativas.append(numero_jogador)
-			elif numero_jogador < numero_computador and numero_jogador > inicio:
-				count+=1
-				print("[!] O número que pensei é maior")
-				tentativas.append(numero_jogador)
-			elif numero_jogador > fim:
-				count+=1
-				print("[!] Você precisa colocar um numero menor que o seu fim")
-				tentativas.append(numero_jogador)
-			elif numero_jogador < inicio:
-				count+=1
-				print("[!] Você precisa colocar um numero menor que o seu inicio")
-				tentativas.append(numero_jogador)
-			elif numero_jogador == numero_computador:
-				count+=1
-				print(f"Parabéns {nome} o seu numero de tentativas foi {count}!!")
-				tentativas.append(numero_jogador)
-				print(f"Suas tentativas foram = {tentativas}")
-				break
-			elif numero_jogador == inicio or numero_jogador == fim:
-				count+=1
-				print("[!] Coloque um valor inteiro dentro do limite estabelecido por você")
-				tentativas.append(numero_jogador)
+				while numero_computador == numero_fim_int or numero_computador == numero_inicio_int:
+					numero_computador = randint(numero_inicio_int, numero_fim_int)
+				possibilidades()
+
+		except ValueError:
+			resultado.config(text= "Adicione uma entrada válida!\n Visite as regras")
+
+	def func_adivinha_numero():
+		global resultado
+		global janela_adivinha_numero	
+		global numero_inicio
+		global numero_fim
+		global numero_inicio_int
+		global numero_fim_int
+		global dica
+		janela_adivinha_numero = tk.Toplevel(menu)
+		janela_adivinha_numero.title("Adivinha número")
+		janela_adivinha_numero.geometry("800x400")
+		informacao_janela_adivinha_numero= tk.Label(janela_adivinha_numero, text="Me informe um inicio e fim e escolherei um número entre esses números para você adivinhar", font = ("Arial", 13, "bold"))
+		informacao_janela_adivinha_numero.pack()
+		botao_regras = tk.Button(janela_adivinha_numero, text="Regras", command=func_janela_regras)
+		# Configuração da Janela
+		botao_gerar = tk.Button(janela_adivinha_numero, text="Gerar número", command=gerar)
+		sinalizar_numero_inicio = tk.Label(janela_adivinha_numero, text="Inicio")
+		numero_inicio = tk.Entry(janela_adivinha_numero)
+		sinalizar_numero_inicio.pack()
+		numero_inicio.pack()
+		sinalizar_numero_fim = tk.Label(janela_adivinha_numero, text="Fim")
+		numero_fim = tk.Entry(janela_adivinha_numero)
+		sinalizar_numero_fim.pack()
+		numero_fim.pack()
+		botao_gerar.pack()
+		botao_regras.pack()
+		resultado = tk.Label(janela_adivinha_numero, text=f"A Máquina não possui um número")
+		resultado.pack()
+		dica = tk.Label(janela_adivinha_numero, text="Eu lhe direi se o número é maior ou menor do que pensei")
+		dica.pack()
+
+		janela_adivinha_numero.mainloop()
+
+	func_adivinha_numero()				
 
 # ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 # | 						Configurações da Interface        					 |
